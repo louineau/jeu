@@ -40,6 +40,38 @@ function movePlayer(deltaTime) {
         player.y += distance;
     }
 }
+let touchStartY = null; // Position initiale du toucher
+
+// Gestion des événements tactiles
+window.addEventListener("touchstart", (e) => {
+    // Sauvegarder la position de départ du toucher
+    touchStartY = e.touches[0].clientY;
+});
+
+window.addEventListener("touchmove", (e) => {
+    if (touchStartY === null) return;
+
+    const touchEndY = e.touches[0].clientY;
+    const touchDeltaY = touchStartY - touchEndY;
+
+    // Déplacement vers le haut
+    if (touchDeltaY > 30) {
+        movePlayerUp(); // Appeler la fonction de déplacement vers le haut
+        touchStartY = null; // Réinitialiser après un geste
+    }
+    // Déplacement vers le bas
+    else if (touchDeltaY < -30) {
+        movePlayerDown(); // Appeler la fonction de déplacement vers le bas
+        touchStartY = null; // Réinitialiser après un geste
+    }
+});
+
+// Réinitialiser après un toucher terminé
+window.addEventListener("touchend", () => {
+    touchStartY = null;
+});
+
+
 
 // Créer un obstacle
 function createObstacle() {
