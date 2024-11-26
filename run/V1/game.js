@@ -151,7 +151,7 @@ function update(currentTime) {
     speed += 0.01; // Ajuste la difficulté au fil du temps
 
     // Afficher le score
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "blue";
     ctx.font = "20px Arial";
     ctx.fillText(`Score: ${score}`, 10, 30);
     score += Math.floor(deltaTime / 100); // Incrémenter le score en fonction du temps écoulé
