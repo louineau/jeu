@@ -20,6 +20,8 @@ html, body {
     width: 100%; /* Assure une largeur fixe */
     height: 100%; /* Assure une hauteur fixe */
     box-sizing: border-box; /* Gère les bordures correctement */
+    touch-action: none; /* Désactive les actions tactiles par défaut (comme le scroll) */
+    -ms-touch-action: none; /* Support pour les anciens navigateurs */
 }
 
 /* Fixe le canvas pour qu'il occupe tout l'écran */
