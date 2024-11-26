@@ -42,11 +42,30 @@ function movePlayer(deltaTime) {
 }
 let touchStartY = null; // Position initiale du toucher
 
-// Gestion des événements tactiles
+let touchStartY = null; // Position initiale du toucher
+
+// Fonction pour déplacer le joueur vers le haut
+function movePlayerUp() {
+    if (player.y > 0) {
+        player.y -= player.height; // Déplacer d'un bloc vers le haut
+    }
+}
+
+// Fonction pour déplacer le joueur vers le bas
+function movePlayerDown() {
+    if (player.y + player.height < canvas.height) {
+        player.y += player.height; // Déplacer d'un bloc vers le bas
+    }
+}
+
+// Empêcher le défilement et capturer les gestes tactiles
 window.addEventListener("touchstart", (e) => {
+    // Bloquer les gestes de défilement par défaut
+    e.preventDefault();
+
     // Sauvegarder la position de départ du toucher
     touchStartY = e.touches[0].clientY;
-});
+}, { passive: false });
 
 window.addEventListener("touchmove", (e) => {
     if (touchStartY === null) return;
@@ -54,22 +73,23 @@ window.addEventListener("touchmove", (e) => {
     const touchEndY = e.touches[0].clientY;
     const touchDeltaY = touchStartY - touchEndY;
 
-    // Déplacement vers le haut
+    // Déplacement vers le haut (si le mouvement est assez grand)
     if (touchDeltaY > 30) {
         movePlayerUp(); // Appeler la fonction de déplacement vers le haut
         touchStartY = null; // Réinitialiser après un geste
     }
-    // Déplacement vers le bas
+    // Déplacement vers le bas (si le mouvement est assez grand)
     else if (touchDeltaY < -30) {
         movePlayerDown(); // Appeler la fonction de déplacement vers le bas
         touchStartY = null; // Réinitialiser après un geste
     }
-});
+}, { passive: false });
 
 // Réinitialiser après un toucher terminé
 window.addEventListener("touchend", () => {
     touchStartY = null;
 });
+
 
 
 
