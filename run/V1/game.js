@@ -6,51 +6,38 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 // Configuration initiale
-let player = { x: 50, y: canvas.height / 2, width: 30, height: 30, speed: 5 };
+let player = { x: 50, y: canvas.height / 2, width: 30, height: 30, speed: 300 }; // La vitesse est en pixels par seconde
 let obstacles = [];
-let speed = 3; // Vitesse initiale des obstacles
+let speed = 200; // Vitesse initiale des obstacles (pixels/seconde)
 let score = 0;
-let keys = { ArrowUp: false, ArrowDown: false }; // Suivi des touches utiles (haut et bas)
+let keys = { ArrowUp: false, ArrowDown: false }; // Suivi des touches
+
+// Temps pour synchronisation
+let lastTime = 0;
 
 // Écouter les touches du clavier
 window.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+    if (e.key in keys) {
         keys[e.key] = true;
-        e.preventDefault(); // Empêcher le comportement par défaut (défilement)
+        e.preventDefault();
     }
 });
 window.addEventListener("keyup", (e) => {
-    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+    if (e.key in keys) {
         keys[e.key] = false;
-        e.preventDefault(); // Empêcher le comportement par défaut (défilement)
+        e.preventDefault();
     }
 });
 
-// Empêcher le défilement de la page
-function preventScroll(event) {
-    const keysToBlock = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "]; // Touches à bloquer (flèches et espace)
-    if (keysToBlock.includes(event.key)) {
-        event.preventDefault();
-    }
-}
-
-// Empêcher le défilement pour les touches du clavier
-window.addEventListener("keydown", preventScroll);
-
-// Empêcher le défilement pour la molette de la souris
-window.addEventListener("wheel", (event) => event.preventDefault(), { passive: false });
-
-// Empêcher le défilement pour les gestes tactiles (mobile)
-window.addEventListener("touchmove", (event) => event.preventDefault(), { passive: false });
-
-
 // Déplacer le joueur
-function movePlayer() {
+function movePlayer(deltaTime) {
+    const distance = player.speed * (deltaTime / 1000); // Distance parcourue = vitesse x temps
+
     if (keys.ArrowUp && player.y > 0) {
-        player.y -= player.speed;
+        player.y -= distance;
     }
     if (keys.ArrowDown && player.y + player.height < canvas.height) {
-        player.y += player.speed;
+        player.y += distance;
     }
 }
 
@@ -66,11 +53,15 @@ function createObstacle() {
 }
 
 // Mettre à jour et dessiner le jeu
-function update() {
+function update(currentTime) {
+    // Calculer le temps écoulé depuis le dernier appel
+    const deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Déplacer le joueur
-    movePlayer();
+    movePlayer(deltaTime);
 
     // Dessiner le joueur
     ctx.fillStyle = "blue";
@@ -78,7 +69,7 @@ function update() {
 
     // Mettre à jour et dessiner les obstacles
     obstacles.forEach((obs, index) => {
-        obs.x -= speed; // Faire avancer les obstacles vers la gauche
+        obs.x -= speed * (deltaTime / 1000); // Avancer en fonction du temps écoulé
 
         // Supprimer les obstacles hors écran
         if (obs.x + obs.width < 0) {
@@ -105,17 +96,17 @@ function update() {
     if (Math.random() < 0.02) createObstacle();
 
     // Augmenter légèrement la vitesse
-    speed += 0.001;
+    speed += 0.01; // Ajuste la difficulté au fil du temps
 
     // Afficher le score
     ctx.fillStyle = "white";
     ctx.font = "20px Arial";
     ctx.fillText(`Score: ${score}`, 10, 30);
-    score++;
+    score += Math.floor(deltaTime / 100); // Incrémenter le score en fonction du temps écoulé
 
     // Rafraîchir le jeu
     requestAnimationFrame(update);
 }
 
 // Lancer le jeu
-update();
+requestAnimationFrame(update);
